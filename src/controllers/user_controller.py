@@ -1,11 +1,9 @@
 from typing import List
-from fastapi import responses
 
 from sqlalchemy.orm import Session
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.sql.functions import user
 
 from src.repositories.postgres.sqlalchemy import get_database
 from src.schemas.user_schema import UserSchema, UserCreateSchema
@@ -58,4 +56,4 @@ def delete_user(user_id: int, session: Session = Depends(get_database)):
         message = {'detail': 'User Not Found'}
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=message)
     else:
-        return 'User'
+        return f'User {deleted.full_name} successfully deleted.'
