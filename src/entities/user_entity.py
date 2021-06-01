@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 
 from src.repositories.postgres.sqlalchemy import Base
 
@@ -14,3 +15,5 @@ class UserEntity(Base):
     phone_number = Column(String(16))
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+
+    transactions = relationship("TransactionEntity", back_populates="owner")

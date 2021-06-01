@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
 from src.repositories.postgres.sqlalchemy import get_database
-from src.schemas.transaction_schema import TransactionSchema
+from src.schemas.transaction_schema import TransactionCreateSchema, TransactionSchema
 from src.repositories.postgres.transaction_repository import TransactionRepository
 
 transaction_router = APIRouter(prefix='/transaction')
@@ -19,19 +19,19 @@ def get_all_transactions(session: Session = Depends(get_database)):
     return transactions
 
 
-# @transaction_router.post('/')
-# def create_user(user: UserCreateSchema, session: Session = Depends(get_database)):
-#    repository = UserRepository(session)
-#    user = repository.create(user)
-#    return user
+@transaction_router.post('/')
+def create_transaction(transaction: TransactionCreateSchema, session: Session = Depends(get_database)):
+    repository = TransactionRepository(session)
+    transaction = repository.create(transaction)
+    return transaction
 
 
-# @transaction_router.delete('/{user_id}')
-# def delete_user(user_id: int, session: Session = Depends(get_database)):
-#     repository = UserRepository(session)
-#     deleted = repository.delete(user_id)
-#     if not deleted:
-#         message = {'detail': 'User Not Found'}
-#         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=message)
-#     else:
-#         return f'User {deleted.full_name} successfully deleted.'
+@transaction_router.delete('/{transaction_id}')
+def delete_transaction(transaction_id: int, session: Session = Depends(get_database)):
+    repository = TransactionRepository(session)
+    deleted = repository.delete(transaction_id)
+    if not deleted:
+        message = {'detail': 'Transaction Not Found'}
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=message)
+    else:
+        return 'Transaction successfully deleted.'
