@@ -17,6 +17,11 @@ class TransactionRepository:
         transactions = [TransactionSchema(**transaction.__dict__) for transaction in db_transactions]
         return transactions
 
+    def get_by_user_id(self, user_id: int):
+        db_transactions = self.__database.query(TransactionEntity).filter(TransactionEntity.user_id == user_id).all()
+        transactions = [TransactionSchema(**transaction.__dict__) for transaction in db_transactions]
+        return transactions
+
     def get_one(self, transaction_id):
         db_transaction = self.__database.query(TransactionEntity).get(transaction_id)
 
@@ -24,7 +29,7 @@ class TransactionRepository:
             return None
 
         else:
-            transaction = TransactionSchema(**db_transaction.__dict__)
+            transaction = [TransactionSchema(**db_transaction.__dict__)]
             return transaction
 
     def create(self, transaction: TransactionCreateSchema):
@@ -50,7 +55,7 @@ class TransactionRepository:
 
         self.__database.commit()
         self.__database.refresh(db_transaction)
-        transaction_schema = TransactionSchema(**db_transaction.__dict__)
+        transaction_schema = [TransactionSchema(**db_transaction.__dict__)]
         return transaction_schema
 
     def delete(self, transaction_id):

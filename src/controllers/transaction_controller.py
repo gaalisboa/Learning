@@ -19,11 +19,41 @@ def get_all_transactions(session: Session = Depends(get_database)):
     return transactions
 
 
+@transaction_router.get('/{user_id}', response_model=List[TransactionSchema])
+def get_transactions_by_user_id(user_id: int, session: Session = Depends(get_database)):
+    repository = TransactionRepository(session)
+    transactions = repository.get_by_user_id(user_id)
+    return transactions
+
+
 @transaction_router.post('/')
 def create_transaction(transaction: TransactionCreateSchema, session: Session = Depends(get_database)):
     repository = TransactionRepository(session)
     transaction = repository.create(transaction)
     return transaction
+
+
+@transaction_router.get('/{transaction_id}', response_model=List[TransactionSchema])
+def get_transaction_by_id(transaction_id: int, session: Session = Depends(get_database)):
+    repository = TransactionRepository(session)
+    transaction = repository.get_one(transaction_id)
+    if not transaction:
+        message = {'detail': 'Transaction Not Found'}
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=message)
+    else:
+        return transaction
+
+
+@transaction_router.put('/{transaction_id}', response_model=List[TransactionSchema])
+def update_transaction(transaction_id: int, transaction: TransactionCreateSchema,
+                       session: Session = Depends(get_database)):
+    repository = TransactionRepository(session)
+    transaction = repository.update(transaction_id, transaction)
+    if not transaction:
+        message = {'detail': 'Transaction Not Found'}
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=message)
+    else:
+        return transaction
 
 
 @transaction_router.delete('/{transaction_id}')

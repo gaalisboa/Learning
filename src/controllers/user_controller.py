@@ -26,7 +26,7 @@ def create_user(user: UserCreateSchema, session: Session = Depends(get_database)
     return user
 
 
-@user_router.get('/{user_id}', response_model=UserSchema)
+@user_router.get('/{user_id}', response_model=List[UserSchema])
 def get_user_by_id(user_id: int, session: Session = Depends(get_database)):
     repository = UserRepository(session)
     user = repository.get_one(user_id)
@@ -37,7 +37,7 @@ def get_user_by_id(user_id: int, session: Session = Depends(get_database)):
         return user
 
 
-@user_router.put('/{user_id}', response_model=UserSchema)
+@user_router.put('/{user_id}', response_model=List[UserSchema])
 def update_user(user_id: int, user: UserCreateSchema, session: Session = Depends(get_database)):
     repository = UserRepository(session)
     user = repository.update(user_id, user)

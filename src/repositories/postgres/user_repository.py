@@ -24,7 +24,7 @@ class UserRepository:
             return None
 
         else:
-            user = UserSchema(**db_user.__dict__)
+            user = [UserSchema(**db_user.__dict__)]
             return user
 
     def create(self, user: UserCreateSchema):
@@ -34,7 +34,7 @@ class UserRepository:
         self.__database.commit()
         self.__database.refresh(db_user)
 
-        user_schema = UserSchema(**db_user.__dict__)
+        user_schema = [UserSchema(**db_user.__dict__)]
         return user_schema
 
     def update(self, user_id, user: UserCreateSchema):
@@ -50,7 +50,7 @@ class UserRepository:
 
         self.__database.commit()
         self.__database.refresh(db_user)
-        user_schema = UserSchema(**db_user.__dict__)
+        user_schema = [UserSchema(**db_user.__dict__)]
         return user_schema
 
     def delete(self, user_id):
